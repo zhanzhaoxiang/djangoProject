@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+elementFormDefault="qualified">
+<xs:element name="message">
+    <xs:complexType mixed="true">
+        <xs:sequence>
+           <xs:element name="药方" maxOccurs="unbounded">
+                <xs:complexType mixed="true">
+                    <xs:sequence>
+                        <xs:element name="名字" maxOccurs="unbounded">
+                            <xs:complexType mixed="true">
+                                <xs:sequence>
+                                   <xs:element name="适应症" type="xs:string" maxOccurs="unbounded"/>
+                                   <xs:element name="配方" type="xs:string" maxOccurs="unbounded"/>
+                                   <xs:element name="处方用法" type="xs:string" maxOccurs="unbounded"/>
+                                   <xs:element name="用法" type="xs:string" maxOccurs="unbounded"/>
+                                   <xs:element name="禁忌" type="xs:string" maxOccurs="unbounded"/>
+                                   <xs:element name="可用症状" type="xs:string" maxOccurs="unbounded"/>
+                                 </xs:sequence>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:element>
+</xs:schema>
