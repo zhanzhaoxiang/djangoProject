@@ -1,0 +1,15 @@
+#emailHelp{
+    color: red;
+}
+.error_tip {
+    color: red;
+    font-size: 12px;
+    margin-left: 10px;
+    display: none;
+}
+.error_tip2 {
+    color: red;
+    font-size: 12px;
+    margin-left: 10px;
+    display: none;
+}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    商品分类
+{% endblock %}
+
+{% block mycss %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/type_show.css' %}"/>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        <div class="direct-left" style="margin-right:20px;">
+            {% block type_class %}
+
+            {% endblock %}
+        </div>
+        {% block type_goods %}
+
+        {% endblock %}
+    </div>
+{% endblock %}
+
+{% block myjs %}
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="{% static 'js/main.js' %}"></script>
+{% endblock %}

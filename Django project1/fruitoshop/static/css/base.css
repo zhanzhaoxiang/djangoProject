@@ -1,0 +1,8 @@
+#box{
+        width: 70%;
+        height: auto;
+        min-height: 1000px;
+        background-color: lightpink;
+        margin: auto auto;
+        padding: 20px;
+    }

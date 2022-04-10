@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    用户信息修改
+{% endblock %}
+
+{% block mycss %}
+{% endblock %}
+
+{% block content %}
+    <!--    {% if msg %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>{{ msg }}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}-->
+    <form class="form-horizontal" method="post">
+        {% csrf_token %}
+        <!--做一个隐藏input传递id-->
+        <input type="hidden" name="id" value="{{ user.id }}" id="uid">
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-3 row justify-content-end col-form-label">用户名：</label>
+            <div class="col-sm-4">
+                <input type="text" class="offset-1 form-control" id="username" name="username"
+                       value="{{ user.username }}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-3 row justify-content-end col-form-label">手机号：</label>
+            <div class="col-sm-4">
+                <input type="text" class="offset-1 form-control" id="phone" name="phone" value="{{ user.phone }}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-3 row justify-content-end col-form-label">邮箱：</label>
+            <div class="col-sm-4">
+                <input type="text" class="offset-1 form-control" id="email" name="email" value="{{ user.email }}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-3 row justify-content-end col-form-label">真实姓名：</label>
+            <div class="col-sm-4">
+                <input type="text" class="offset-1 form-control" id="realname" name="realname"
+                       value="{{ user.userprofile.realname }}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-3 row justify-content-end col-form-label">地址：</label>
+            <div class="col-sm-4">
+                <input type="text" class="offset-1 form-control" id="address" name="address"
+                       value="{{ user.userprofile.address }}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-3 row justify-content-end col-form-label">年龄：</label>
+            <div class="col-sm-4">
+                <input type="text" class="offset-1 form-control" id="age" name="age"
+                       value="{{ user.userprofile.age }}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-3 row justify-content-end col-form-label">工作：</label>
+            <div class="col-sm-4">
+                <input type="text" class="offset-1 form-control" id="job" name="job"
+                       value="{{ user.userprofile.job }}">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-3 row justify-content-end col-form-label">性别：</label>
+            <div class="col-sm-4">
+                <select id="gender" name="gender" class="offset-1 custom-select is-invalid" id="validationServer04"
+                        aria-describedby="validationServer04Feedback" required>
+                    {% if user.userprofile.gender == '男' %}
+                        <option>男</option>
+                        <option>女</option>
+                    {% else %}
+                        <option>女</option>
+                        <option>男</option>
+                    {% endif %}
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-3 row justify-content-end col-form-label">密码：</label>
+            <div class="col-sm-4">
+                <input type="text" class="offset-1 form-control" id="password" name="password"
+                       value="{{ user.password }}">
+            </div>
+        </div>
+        <div class="form-group form-check offset-4">
+            <input type="checkbox" class="offset-1 form-check-input" id="is_delete" name="is_delete"
+                    {% if user.is_delete == 1 %}
+                   checked
+                    {% endif %} >
+            <label class="form-check-label" for="exampleCheck1">用户是否删除</label>
+        </div>
+        <div class="form-group row">
+            <div class="offset-4 col-sm-10">
+                <button type="button" class="btn btn-primary" id="btn_update">信息修改</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block myjs %}
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="{% static 'js/main.js' %}"></script>
+{% endblock %}

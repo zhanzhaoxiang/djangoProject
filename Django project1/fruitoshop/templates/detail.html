@@ -1,0 +1,149 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    用户中心
+{% endblock %}
+
+{% block content %}
+    {% if msg %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>{{ msg }}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
+    <h3>用户中心</h3>
+    <div class="row">
+        <div class="col-2">
+            <div class="list-group" id="list-tab" role="tablist">
+                <a class="nav-link list-group-item list-group-item-action active" id="list-home-list"
+                   data-toggle="list" href="#list-home" role="tab" aria-controls="home">个人信息</a>
+                <a class="nav-link list-group-item list-group-item-action" id="list-profile-list"
+                   data-toggle="list" href="#list-profile" role="tab" aria-controls="profile">全部订单</a>
+                <a class="nav-link list-group-item list-group-item-action" id="list-messages-list"
+                   data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">收货地址</a>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class=" tab-content" id="nav-tabContent">
+                <div class=" tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
+                    <h5 class="center card-title ">基本信息</h5>
+                    <ul class="list-group">
+                        <li class="list-group-item " style="height:150px">头像：
+                            {% csrf_token %}
+                            <img id="icon1" style="width:90px; height:90px; border-radius: 90px"
+                                 src="/static{{ MEDIA_URL }}{{ request.user.icon }}" alt=""><br>
+
+                            <input type="button" class="offset-1 btn btn-primary" value="更换头像"
+                                   style="position: relative;"/>
+                            <input type="file" id="iconfile"
+                                   style="top:104px;left:65px;cursor:pointer;position:absolute;opacity:0;">
+
+                        </li>
+                        <li class="list-group-item">用户名：{{ user.username }}</li>
+                        <li class="list-group-item">邮箱：{{ user.email }}</li>
+                        <li class="list-group-item">电话：{{ user.phone }}</li>
+                        <li class="list-group-item">
+                            <a href="#" class="del" tag="{{ user.id }}">删除</a>
+                            <a href="#">修改</a></li>
+                    </ul>
+                </div>
+                <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+                    <h5 class="center card-title ">全部订单</h5>
+                </div>
+                <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">
+                    <h5 class="center card-title ">收货地址</h5>
+                    <div class="site-wrapper">
+                        {% if addr %}
+                            <dl>
+                                <dt>当前地址：</dt>
+                                <dd>{{ addr.receive_address }} （{{ addr.receive_user }}收）邮政编码：{{ addr.post_code }}
+                                    联系电话：{{ addr.phone }} </dd>
+                            </dl>
+                        {% else %}
+                            <dl>
+                                <dt>当前地址：</dt>
+                                <dd> 请添加收货地址！</dd>
+                            </dl>
+                        {% endif %}
+                    </div>
+                    <form class="form-horizontal" action="{% url 'shop:detail' %}" method="post" id="add_address">
+                        <h6 class="center card-title dataTable ">
+                            <dl>
+                                <dt>添加地址</dt>
+                            </dl>
+                        </h6>
+                        {% csrf_token %}
+                        <div class="form-group row">
+                            <label for="inputEmail3"
+                                   class="col-sm-4 row justify-content-end col-form-label">收件人：</label>
+                            <div class="form-inline col-sm-6">
+                                <input type="text" class=" form-control col-sm-12" id="receive_user" name="receive_user"
+                                       placeholder="收件人">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputPassword3"
+                                   class="col-sm-4 row justify-content-end col-form-label">详细地址：</label>
+                            <div class="form-inline col-sm-6">
+                                <input type="text" class=" form-control col-sm-12" id="receive_address" name="receive_address"
+                                       placeholder="详细地址">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputPassword3"
+                                   class="col-sm-4 row justify-content-end col-form-label">邮编：</label>
+                            <div class="form-inline col-sm-6">
+                                <input type="text" class=" form-control col-sm-12" id="post_code" name="post_code"
+                                       placeholder="邮编">
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="inputPassword3"
+                                   class="col-sm-4 row justify-content-end col-form-label">联系电话：</label>
+                            <div class="form-inline col-sm-6">
+                                <input type="text" class=" form-control col-sm-12" id="phone" name="phone"
+                                       placeholder="联系电话">
+                            </div>
+                        </div>
+                        <input type="submit" class=" offset-5 btn btn-success" value="提交">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block myjs %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+                $("#iconfile").change(function () {
+                        var formData = new FormData();
+                        formData.append('uid', {{ user.id }});
+                        formData.append('icon', $("#iconfile")[0].files[0]);
+                        csrf = $('input[name="csrfmiddlewaretoken"]').val();
+                        formData.append('csrfmiddlewaretoken', csrf);
+                        $.ajax({
+                            url: /upload_icon/,
+                            type: 'post',
+                            data: formData,
+                            dataType: 'json',
+                            cache: false,
+                            processData: false,
+                            contentType: false,
+                            success: function displayimg(data) {
+                                if (data.msg === 'ok') {
+                                    $("#icon").attr("src", "/static{{ MEDIA_URL }}" + data.img_path);
+                                    $("#icon1").attr("src", "/static{{ MEDIA_URL }}" + data.img_path);
+                                }
+                            }
+                        })
+                    }
+                )
+            }
+        )
+    </script>
+{% endblock %}

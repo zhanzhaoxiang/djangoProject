@@ -1,0 +1,57 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    用户资料展示
+{% endblock %}
+
+{% block content %}
+    {% if msg %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>{{ msg }}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
+    <table class="table table-hover">
+        <tr>
+            <td>序号</td>
+            <td>用户名</td>
+            <td>手机号</td>
+            <td>邮箱</td>
+            <td>注册时间</td>
+            <td>真实姓名</td>
+            <td>地址</td>
+            <td>年龄</td>
+            <td>工作</td>
+            <td>性别</td>
+            <td>操作</td>
+        </tr>
+        {% for user in users %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.phone }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.add_time }}</td>
+                <td>{{ user.userprofile.realname }}</td>
+                <td>{{ user.userprofile.address }}</td>
+                <td>{{ user.userprofile.age }}</td>
+                <td>{{ user.userprofile.job }}</td>
+                <td>{{ user.userprofile.gender }}</td>
+                <td>
+                    <!--设置href="javascript:;使其执行无意义语句，阻止执行跳转 -->
+                    <a href="javascript:;" class="del" tag="{{ user.id }}">删除</a>
+                    <a href="{% url 'shop:update' %}?id={{ user.id }}">修改</a>
+                </td>
+            </tr>
+        {% endfor %}
+
+    </table>
+{% endblock %}
+
+{% block myjs %}
+    <script type="text/javascript" charset="utf-8" src="{% static 'js/main.js' %}"></script>
+{% endblock %}

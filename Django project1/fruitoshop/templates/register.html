@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    用户注册
+{% endblock %}
+
+{% block mycss %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/register.css' %}"/>
+{% endblock %}
+
+{% block content %}
+    <!-- {% if msg %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>{{ msg }}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}-->
+    <form class="form-horizontal" id="reg_form" action="{% url 'shop:register' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-4 row justify-content-end col-form-label">用户名：</label>
+            <div class="form-inline col-sm-6">
+                <input type="text" class=" form-control col-sm-5" id="username" name="username">
+                <span id="passwordHelpInline" class="error_tip">
+                    提示信息
+                </span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-4 row justify-content-end col-form-label">真实姓名：</label>
+            <div class="form-inline col-sm-6">
+                <input type="text" class=" form-control col-sm-5" id="realname" name="realname">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-4 row justify-content-end col-form-label">年龄：</label>
+            <div class="form-inline col-sm-6">
+                <input type="text" class=" form-control col-sm-5" id="age" name="age">
+                <span id="passwordHelpInline" class="error_tip">
+                    提示信息
+                </span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-4 row justify-content-end col-form-label">性别：</label>
+            <div class="form-inline col-sm-6">
+                <select name="gender" class=" custom-select is-invalid col-sm-5" id="gender"
+                        aria-describedby="validationServer04Feedback" required>
+                    <option>男</option>
+                    <option>女</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-4 row justify-content-end col-form-label">工作：</label>
+            <div class="form-inline col-sm-6">
+                <input type="text" class=" form-control col-sm-5" id="job" name="job">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-4 row justify-content-end col-form-label">手机号：</label>
+            <div class="form-inline col-sm-6">
+                <input type="text" class=" form-control col-sm-5" id="phone" name="phone">
+                <span id="passwordHelpInline" class="error_tip">
+                    提示信息
+                </span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-4 row justify-content-end col-form-label">地址：</label>
+            <div class="form-inline col-sm-6">
+                <input type="text" class=" form-control col-sm-5" id="address" name="address">
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputEmail3" class="col-sm-4 row justify-content-end col-form-label">邮箱：</label>
+            <div class="form-inline col-sm-6">
+                <input type="text" class=" form-control col-sm-5" id="email" name="email">
+                <span id="passwordHelpInline" class="error_tip col-sm-5">
+                    提示信息
+                </span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputPassword3" class="col-sm-4 row justify-content-end col-form-label">密码：</label>
+            <div class="form-inline col-sm-6">
+                <input type="password" class=" form-control col-sm-5" id="password" name="password">
+                <span id="passwordHelpInline" class="error_tip col-sm-5">
+                    提示信息
+                </span>
+            </div>
+        </div>
+        <div class="form-group row">
+            <label for="inputPassword3" class="col-sm-4 row justify-content-end col-form-label">确认密码：</label>
+            <div class="form-inline col-sm-6">
+                <input type="password" class=" form-control col-sm-5" id="repassword" name="repassword"/>
+                <span id="passwordHelpInline" class="error_tip col-sm-5">
+                    提示信息
+                </span>
+            </div>
+        </div>
+        <div class="form-group form-check offset-4">
+            <input type="checkbox" class="offset-1 form-check-input" id="allow" name="allow" checked="checked">
+            <label class="form-check-label" for="exampleCheck1">同意便利鲜用户协议</label>
+            <span id="passwordHelpInline" class="error_tip2 col-sm-5">
+                提示信息
+            </span>
+        </div>
+        <br>
+        <div class="form-group row">
+            <div class="offset-4 col-sm-10">
+                <button type="submit" id="reg_form" class="btn btn-primary">注册</button>
+                <a href="{% url 'shop:user_login' %}" class="btn btn-primary">登录</a>
+            </div>
+        </div>
+    </form>
+{% endblock %}
+
+{% block myjs %}
+<script type="text/javascript"  src="{% static 'js/register.js'%}"></script>
+{% endblock %}

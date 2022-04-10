@@ -1,0 +1,64 @@
+{% extends 'type_base.html' %}
+
+{% load static %}
+
+{% block title %}
+    {{ user.username }}的购物车
+{% endblock %}
+
+{% block mycss %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/type_show.css' %}"/>
+{% endblock %}
+
+{% block type_class %}
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link justify-content-end" href="{% url 'shop:type_show' %}">全部</a>
+        </li>
+        {% for type in types %}
+            <li class="nav-item">
+                {% csrf_token %}
+                <!-- <a class="type_class nav-link justify-content-end "
+                           href="javascript:;" tag="{{ type.id }}">{{ type.tname }}</a>
+                        -->
+                <a class="nav-link justify-content-end"
+                   href="{% url 'shop:detail_type' type.id %}">{{ type.tname }}</a>
+
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block type_goods %}
+    <table class="table table-hover a" id="type-show">
+        <tr>
+            <td>序号</td>
+            <td>名称</td>
+            <td>价格</td>
+            <td>数量</td>
+            <td>操作</td>
+        </tr>
+        {% for goods in user.goods_set.all %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td><a href="{% url 'shop:goods_details' goods.id %}">{{ goods.name }}</a></td>
+                <td>{{ goods.price }}</td>
+                <td>1</td>
+                <td>
+                    <!--设置href="javascript:;使其执行无意义语句，阻止执行跳转 -->
+                    <a href="javascript:;" tag ={{ goods.id }} class="cart_del">删除</a>
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td>还没有商品</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+{% endblock %}
+
+{% block myjs %}
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="{% static 'js/main.js' %}"></script>
+{% endblock %}

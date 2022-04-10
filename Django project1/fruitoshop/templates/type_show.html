@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    商品分类
+{% endblock %}
+
+{% block mycss %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/type_show.css' %}"/>
+{% endblock %}
+
+{% block content %}
+    <div class="container-fluid">
+        {% if msg %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>{{ msg }}</strong>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endif %}
+        <div class="direct-left">
+            <ul class="nav flex-column">
+                <li class="nav-item">
+                    <a class="nav-link active justify-content-end" href="{% url 'shop:type_show' %}">全部</a>
+                </li>
+                {% for type in types %}
+                    <li class="nav-item">
+                        {% csrf_token %}
+                        <!-- <a class="type_class nav-link justify-content-end "
+                           href="javascript:;" tag="{{ type.id }}">{{ type.tname }}</a>
+                        -->
+                        <a class="nav-link justify-content-end"
+                           href="{% url 'shop:detail_type' type.id %}">{{ type.tname }}</a>
+{#                        <a#}
+{#                           href="{% url 'shop:delete_type' %}?id={{ type.id }}">删除{{ type.tname }}分类</a>#}
+
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+        <table class="table table-hover a" id="type-show">
+            <tr>
+                <td>序号</td>
+                <td>上市时间</td>
+                <td>名称</td>
+                <td>描述</td>
+                <td>价格</td>
+                <td>库存</td>
+                <td>销售量</td>
+                <td>收藏量</td>
+                <td>操作</td>
+            </tr>
+            {% for goods in goodss %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ goods.add_time }}</td>
+                    <td><a href="{% url 'shop:goods_details' goods.id %}">{{ goods.name }}</a></td>
+                    <td>{{ goods.desc }}</td>
+                    <td>{{ goods.price }}</td>
+                    <td>{{ goods.store_num }}</td>
+                    <td>{{ goods.sale_num }}</td>
+                    <td>{{ goods.save_num }}</td>
+                    <td>
+                        <!--设置href="javascript:;使其执行无意义语句，阻止执行跳转 -->
+                        <a href="javascript:;" class="dele" tag="{{ goods.id }}">删除</a>
+                        <a href="{% url 'shop:update' %}?id={{ goods.id }}">修改</a>
+                    </td>
+                </tr>
+            {% endfor %}
+            <tbody id="tb"></tbody>
+
+        </table>
+    </div>
+{% endblock %}
+
+{% block myjs %}
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="{% static 'js/main.js' %}"></script>
+{% endblock %}

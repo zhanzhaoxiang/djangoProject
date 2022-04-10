@@ -1,0 +1,126 @@
+{% extends 'type_base.html' %}
+
+{% load static %}
+
+{% block title %}
+    {{ goods.name }}详情
+{% endblock %}
+
+
+{% block mycss %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/type_show.css' %}"/>
+{% endblock %}
+
+{% block type_class %}
+    <ul class="nav flex-column">
+        <li class="nav-item">
+            <a class="nav-link justify-content-end" href="{% url 'shop:type_show' %}">全部</a>
+        </li>
+        {% for type in types %}
+            <li class="nav-item">
+                {% csrf_token %}
+                <!-- <a class="type_class nav-link justify-content-end "
+                           href="javascript:;" tag="{{ type.id }}">{{ type.tname }}</a>
+                        -->
+                <a class="nav-link justify-content-end"
+                   href="{% url 'shop:detail_type' type.id %}">{{ type.tname }}</a>
+                {#                <a class="nav-link justify-content-end"#}
+                {#                   href="{% url 'shop:delete_type' %}?id={{ type.id }}">删除分类</a>#}
+            </li>
+        {% endfor %}
+    </ul>
+{% endblock %}
+
+{% block type_goods %}
+    <div class="offset-2 col-md-10 a " style="margin-right:0;padding:0">
+        <div class="card" style="width:60%;float:left">
+            <img class="card-img-top" src="/static{{ MEDIA_URL }}{{ goods.image }}" alt="Card image cap">
+            <div class="card-body card1">
+                <h5 class="card-title">商品名：{{ goods.name }}</h5>
+                <p class="card-text">商品描述：{{ goods.desc|safe }}</p>
+                <p class="card-text">商品价格：￥<em>{{ goods.price }}</em>/{{ goods.unite }}</p>
+                <p class="card-text">商品销量：{{ goods.sale_num }}</p>
+                <p class="card-text">商品库存：{{ goods.store_num }}</p>
+                <p class="card-text">商品收藏：
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor"
+                         class="bi bi-suit-heart" viewBox="0 0 16 16" id="goods_collect" tag="{{ goods.id }}">
+                        <path id="img_path"
+                              d="m8 6.236-.894-1.789c-.222-.443-.607-1.08-1.152-1.595C5.418 2.345 4.776 2 4 2 2.324 2 1 3.326 1 4.92c0 1.211.554 2.066 1.868 3.37.337.334.721.695 1.146 1.093C5.122 10.423 6.5 11.717 8 13.447c1.5-1.73 2.878-3.024 3.986-4.064.425-.398.81-.76 1.146-1.093C14.446 6.986 15 6.131 15 4.92 15 3.326 13.676 2 12 2c-.777 0-1.418.345-1.954.852-.545.515-.93 1.152-1.152 1.595L8 6.236zm.392 8.292a.513.513 0 0 1-.784 0c-1.601-1.902-3.05-3.262-4.243-4.381C1.3 8.208 0 6.989 0 4.92 0 2.755 1.79 1 4 1c1.6 0 2.719 1.05 3.404 2.008.26.365.458.716.596.992a7.55 7.55 0 0 1 .596-.992C9.281 2.049 10.4 1 12 1c2.21 0 4 1.755 4 3.92 0 2.069-1.3 3.288-3.365 5.227-1.193 1.12-2.642 2.48-4.243 4.38z"></path>
+                    </svg>
+                </p>
+                <p class="card-text">数量：
+                    <a href="javascript:;" style="font-size:3ch" class="minus" id="minus" onclick="calculateTotal('-')">-</a>
+                    <input id="goods_num" type="text" style="width:5ch; text-align:center" value="1">
+                    <a href="javascript:;" style="font-size:3ch" class="add" id="add"
+                       onclick="calculateTotal('+')">+</a>
+                </p>
+                <p class="card-text">总价格：<em>￥20</em></p>
+                <button type="button" id="buy_now" class="btn btn-outline-success" tag="{{ goods.id }}">立即购买</button>
+                <button type="button" id="cart_add" class="btn btn-outline-success" tag="{{ goods.id }}">加入购物车</button>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+                <svg id="my_cart" xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor"
+                     class="bi bi-cart"
+                     viewBox="0 0 16 16">
+                    <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"/>
+                </svg>
+            </div>
+
+        </div>
+        {% for new_good in new_goods %}
+            <div class="card " style="width:40%;float:left">
+                <div class="row no-gutters">
+                    <div class="col-md-6">
+                        <a href="{% url 'shop:goods_details' new_good.id %}">
+                            <img style="width: 100%; height: 100%" src="/static{{ MEDIA_URL }}{{ new_good.image }}"
+                                 alt="...">
+                        </a>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="card-body">
+                            <h5 class="card-title">新品推荐</h5>
+                            <h5 class="card-title">
+                                <a href="{% url 'shop:goods_details' new_good.id %}">
+                                    <small>{{ new_good.name }}</small>
+                                </a>
+                            </h5>
+                            <p class="card-text">￥{{ new_good.price }}/{{ new_good.unite }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+        <div class="" style="width:40%;float:left">
+            <div class="" style="width:50%;">
+                <div class="list-group list-group-horizontal" id="list-tab" role="tablist">
+                    <a style="" class="list-group-item list-group-item-action active" id="list-home-list" data-toggle="list"
+                       href="#list-home" role="tab" aria-controls="home">详情</a>
+                    <a style="" class="list-group-item list-group-item-action" id="list-profile-list" data-toggle="list"
+                       href="#list-profile" role="tab" aria-controls="profile">评论</a>
+                </div>
+            </div>
+            <div class="" style="border:1px solid;height: 20ch ;width:100%">
+                <div class="tab-content" id="nav-tabContent">
+                    <div class="tab-pane fade show active" id="list-home" role="tabpanel"
+                         aria-labelledby="list-home-list">
+                        <p style="width: 100%;float: left;">{{ goods.desc|safe }}</p>
+                        {% for pic in goods.goodsimage_set.all %}
+                            <p style="width: 50%;float: left;">
+                            <img style="width: 100%;float: left;" src="/static{{ MEDIA_URL }}{{ pic.image }}" alt="">
+                            </p>
+                        {% endfor %}
+
+                    </div>
+                    <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
+                        这是评论
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+{% endblock %}
+
+{% block myjs %}
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script type="text/javascript" charset="utf-8" src="{% static 'js/main.js' %}"></script>
+{% endblock %}

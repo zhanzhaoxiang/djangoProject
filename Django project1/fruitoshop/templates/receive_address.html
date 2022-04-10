@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    收货地址
+{% endblock %}
+
+{% block content %}
+    <h3>收货地址</h3>
+    <div class="row">
+        <div class="col-2">
+            <div class="list-group" id="list-tab" role="tablist">
+                <a class="nav-link list-group-item list-group-item-action" id="list-home-list"
+                   href="{% url 'shop:detail' %}" role="tab" aria-controls="home">个人信息</a>
+                <a class="nav-link list-group-item list-group-item-action" id="list-profile-list"
+                   href="{% url 'shop:order' %}" role="tab" aria-controls="profile">全部订单</a>
+                <a class="nav-link list-group-item list-group-item-action  active" id="list-messages-list"
+                   href="{% url 'shop:receive_address' %}" role="tab" aria-controls="messages">收货地址</a>
+            </div>
+        </div>
+        <div class="col-6">
+            <div class=" tab-content" id="nav-tabContent">
+                <div class=" tab-pane fade" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
+                    <h5 class="center card-title ">基本信息</h5>
+                </div>
+                <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">...
+                </div>
+                <div class="tab-pane fade show active" id="list-messages" role="tabpanel"
+                     aria-labelledby="list-messages-list">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">收货地址</h5>
+                            <div class="row">
+                                <div class="col-12">
+                                    <div class="card">
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">收货人</label>
+                                            <input type="text" class="form-control" id="exampleInputEmail1"
+                                                   aria-describedby="emailHelp" placeholder="收货人">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">手机号码</label>
+                                            <input type="text" class="form-control" id="exampleInputEmail1"
+                                                   aria-describedby="emailHelp" placeholder="手机号码">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="exampleInputEmail1">收货地址</label>
+                                            <input type="text" class="form-control" id="exampleInputEmail1"
+                                                   aria-describedby="emailHelp" placeholder="收货地址">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block myjs %}
+    <script type="text/javascript">
+        $(document).ready(function () {
+                $("#iconfile").change(function () {
+                        var formData = new FormData();
+                        formData.append('uid', {{ user.id }});
+                        formData.append('icon', $("#iconfile")[0].files[0]);
+                        csrf = $('input[name="csrfmiddlewaretoken"]').val();
+                        formData.append('csrfmiddlewaretoken', csrf);
+                        $.ajax({
+                            url: /upload_icon/,
+                            type: 'post',
+                            data: formData,
+                            cache: false,
+                            processData: false,
+                            contentType: false,
+                            success: function displayimg() {
+                                input = document.getElementById('iconfile')
+                                //获取第一个文件对象 （如果有多张时可使用循环files数组改变多个<img>的 src值）
+                                var file = input.files[0];
+                                //判断当前是否支持使用FileReader
+                                if (window.FileReader) {
+                                    //创建读取文件的对象
+                                    var fr = new FileReader();
+                                    //以读取文件字符串的方式读取文件 但是不能直接读取file
+                                    //因为文件的内容是存在file对象下面的files数组中的
+                                    //该方法结束后图片会以data:URL格式的字符串（base64编码）存储在fr对象的result中
+                                    fr.readAsDataURL(file);
+                                    fr.onloadend = function () {
+                                        document.getElementById('icon').src = fr.result;
+                                    }
+                                }
+                            }
+                        })
+                    }
+                )
+            }
+        )
+    </script>
+{% endblock %}
