@@ -1,3 +1,4 @@
+import decimal
 import hashlib
 import uuid
 
@@ -446,8 +447,12 @@ def goods_details(request, gid):
         goods = Goods.objects.get(pk=gid)
     except:
         return redirect('shop:welcome')
-    new_goods= Goods.objects.filter(goodstype=goods.goodstype).order_by('update_time')[:2]
-    return render(request, 'goods_details.html', {'types': types, 'goods': goods, 'new_goods': new_goods})
+    new_goods = Goods.objects.filter(goodstype=goods.goodstype).order_by('update_time')[:2]
+    # 验证用户登录设置购物车状态
+    count=0
+    if request.user.is_authenticated:
+        count = Cart.objects.filter(new_user=request.user).count()
+    return render(request, 'goods_details.html', {'types': types, 'goods': goods, 'new_goods': new_goods, 'count': count})
 
 
 def goods_collection(request):
@@ -500,16 +505,22 @@ def cart_add(request):
     :return:
     """
     gid = request.GET.get('id')
-    goods = Goods.objects.get(pk=gid)
-    # users是good的属性，可以直接获取
-    user = User.objects.get(pk=6)
-    # goods.users.add(user)
-    # 可以用goods_set属性来添加
-    user.goods_set.add(goods)
-    if goods and user:
-        return JsonResponse({'msg': '添加成功！'})
+    goodsnum = request.GET.get('goodsnum')
+    total = request.GET.get('total')
+
+    # 判断商品是否添加过
+    if Cart.objects.filter(goods_id=gid, new_user_id=request.user.id).count() > 0:
+        cart = Cart.objects.get(goods_id=gid, new_user_id=request.user.id)
+        cart.number += int(goodsnum)
+        cart.total += decimal.Decimal(total)
+        cart.save()
     else:
-        return JsonResponse({'msg': '添加失败！'})
+        cart = Cart.objects.create(goods_id=gid, new_user=request.user, number=goodsnum, total=float(total))
+    if cart:
+        count = Cart.objects.filter(new_user=request.user).count()
+        return JsonResponse({'status': '添加成功！', 'count': count})
+    else:
+        return JsonResponse({'status': '添加失败！'})
 
 
 def show_my_cart(request):
@@ -519,9 +530,9 @@ def show_my_cart(request):
     :param request:
     :return:
     """
-    user = User.objects.get(pk=6)
+    carts = Cart.objects.filter(new_user=request.user).all()
     types = GoodsType.objects.all()
-    return render(request, 'show_my_cart.html', {'user': user, 'types': types})
+    return render(request, 'show_my_cart.html', {'types': types, 'carts': carts,})
 
 
 def cart_del(request):
@@ -530,13 +541,23 @@ def cart_del(request):
     :param request:
     :return:
     """
-    gid = request.GET.get('id')
-    user = User.objects.get(pk=6)
-    goods = Goods.objects.get(pk=gid)
-    user.goods_set.remove(goods)
-    # 还可以
-    # goods.users.remove(user)
-    return redirect('/show_my_cart/')
+    gid = request.GET.get('gid')
+    # 物理删除
+    result = Cart.objects.filter(new_user=request.user, goods_id=gid).delete()
+    if result:
+        return redirect('/show_my_cart/')
+    else:
+        carts = Cart.objects.filter(new_user=request.user).all()
+        types = GoodsType.objects.all()
+        return render(request, 'show_my_cart.html', {'types': types, 'carts': carts, 'msg': '删除失败！'})
+
+
+def cart_goods_adjust(request):
+    gid = request.GET.get('gid')
+    num = request.GET.get('num')
+    total = request.GET.get('total')
+    Cart.objects.filter(new_user=request.user, goods_id=gid).update(number=num, total=total)
+    return JsonResponse({'msg':'success'})
 
 
 def register_exist(request):

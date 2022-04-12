@@ -40,7 +40,7 @@
                 {% endfor %}
             </ul>
         </div>
-        <table class="table table-hover a" id="type-show">
+        <table class="table table-hover a" style="width: 90%;" id="type-show">
             <tr>
                 <td>序号</td>
                 <td>上市时间</td>
@@ -49,7 +49,6 @@
                 <td>价格</td>
                 <td>库存</td>
                 <td>销售量</td>
-                <td>收藏量</td>
                 <td>操作</td>
             </tr>
             {% for goods in goodss %}
@@ -57,11 +56,10 @@
                     <td>{{ forloop.counter }}</td>
                     <td>{{ goods.add_time }}</td>
                     <td><a href="{% url 'shop:goods_details' goods.id %}">{{ goods.name }}</a></td>
-                    <td>{{ goods.desc }}</td>
+                    <td>{{ goods.desc|safe }}</td>
                     <td>{{ goods.price }}</td>
                     <td>{{ goods.store_num }}</td>
                     <td>{{ goods.sale_num }}</td>
-                    <td>{{ goods.save_num }}</td>
                     <td>
                         <!--设置href="javascript:;使其执行无意义语句，阻止执行跳转 -->
                         <a href="javascript:;" class="dele" tag="{{ goods.id }}">删除</a>

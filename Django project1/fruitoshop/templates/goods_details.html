@@ -54,7 +54,7 @@
                     <a href="javascript:;" style="font-size:3ch" class="add" id="add"
                        onclick="calculateTotal('+')">+</a>
                 </p>
-                <p class="card-text">总价格：<em>￥20</em></p>
+                <p class="card-text">总价格：￥<em>{{ goods.price }}</em></p>
                 <button type="button" id="buy_now" class="btn btn-outline-success" tag="{{ goods.id }}">立即购买</button>
                 <button type="button" id="cart_add" class="btn btn-outline-success" tag="{{ goods.id }}">加入购物车</button>
                 &nbsp;&nbsp;&nbsp;&nbsp;
