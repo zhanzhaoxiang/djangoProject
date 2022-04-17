@@ -30,5 +30,9 @@ urlpatterns = [
     path('cart_del/', views.cart_del, name="cart_del"),
     path('cart_goods_adjust/', views.cart_goods_adjust, name="cart_goods_adjust"),
     path('send_verification_code/', views.send_verification_code, name="send_verification_code"),
-    # path('order/', views.order, name="order"),
+    path('generate_order/', views.generate_order, name="generate_order"),
+    path('submit_order/', views.submit_order, name="submit_order"),
+    path('order_pay/', views.order_pay, name="order_pay"),
+    path('check_order/', views.check_order, name="check_order"),
+    path('order_comment/', views.order_comment, name="order_comment"),
 ]

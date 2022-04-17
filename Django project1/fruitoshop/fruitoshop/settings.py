@@ -211,3 +211,8 @@ EMAIL_PORT = 25
 EMAIL_HOST_USER = '2661397309@qq.com'
 # 邮箱客户端授权码
 EMAIL_HOST_PASSWORD = 'znjcejyikaytdhhb'
+
+
+# 配置支付宝秘钥路径
+PUBLIC_KEY = os.path.join(BASE_DIR, 'shop', "alipay_public_key2048.txt")
+PRIVATE_KEY = os.path.join(BASE_DIR, "shop", "alipay_private_key2048.txt")

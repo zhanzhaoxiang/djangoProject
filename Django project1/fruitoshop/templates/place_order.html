@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    订单页面
+{% endblock %}
+
+{% block mycss %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/type_show.css' %}"/>
+{% endblock %}
+
+{% block mycart %}
+{% endblock %}
+
+
+{% block content %}
+    <div>
+        <h5 class="center card-title ">选择收货地址：</h5>
+        <div class="offset-1 site-wrapper">
+            {% if addrs %}
+                <dt>寄送到：</dt>
+                <a class="btn btn-primary" href="{% url 'shop:detail' %}" style="float:right">编辑地址</a>
+                {% for addr in addrs %}
+                    <dl>
+                        <dd>
+                            <label>
+                                <input type="radio" name="options0" value="{{ addr.id }}" {% if addr.is_default %} checked="checked" {% endif %}>
+                            </label>{{ addr.receive_address }}（{{ addr.receive_user }}收）邮政编码：{{ addr.post_code }}联系电话：{{ addr.phone }}
+                        </dd>
+                    </dl>
+                {% endfor %}
+            {% else %}
+                <dl>
+                    <dt><a href="{% url 'shop:detail' %}">请先到用户中心添加收货地址！</a></dt>
+                </dl>
+            {% endif %}
+        </div>
+    </div>
+    <div>
+        <h5 class="center card-title ">选择支付方式：</h5>
+        <div class="offset-1 site-wrapper">
+            <label >
+                <input type="radio" name="options" id="option1" checked value="2">
+                <label class="zhifubao">支付宝</label>
+            </label>
+            <label >
+                <input type="radio" name="options" id="option2" value="1">
+                <label class="weixin">微信支付</label>
+            </label>
+            <label >
+                <input type="radio" name="options" id="option3" value="3">
+                <label class="bank">银联</label>
+            </label>
+            <label >
+                <input type="radio" name="options" id="option1" value="4">
+                <label class="cash">货到付款</label>
+            </label>
+        </div>
+    </div>
+    <table class="table table-hover" style="width: 90%;" id="type-show">
+    <h5 class="center card-title ">商品列表：</h5>
+        <tr>
+            <td style="text-align:center; ">编号</td>
+            <td style="text-align:center; ">名称</td>
+            <td style="text-align:center; ">图片</td>
+            <td style="text-align:center; ">单价</td>
+            <td style="text-align:center; ">数量</td>
+            <td style="text-align:center; ">小计</td>
+        </tr>
+        {% for goods in goods_list %}
+        <tr>
+            <td class="father_selected" style="width:8%;text-align:center;">
+                {{ forloop.counter }}
+            </td>
+            <td style="width:16%;text-align:center">
+                <a href="{% url 'shop:goods_details' goods.id %}">{{ goods.name }}</a>
+            </td>
+            <td style="width:20%">
+                <img style="width:100%;height:8em" alt="" src="/static{{ MEDIA_URL }}{{ goods.image }}">
+            </td>
+            <td class="single_price" style="width:16%;text-align:center;">
+                ￥<em>{{ goods.price }}</em>/{{ goods.unite }}</td>
+            <td style="width:16%;text-align:center;">
+                {{ goods.number }}
+            </td>
+            <td class="single_total" style="width:16%;text-align:center;">￥<em>{{ goods.total }}</em></td>
+        </tr>
+        {% endfor %}
+    </table>
+    <table class="table table-hover" style="width: 90%;">
+        <tr>
+            <td style="width: 100%">
+                <p class="btn btn-warning" style="border:1px solid #f92672">
+                    <p1 id="">总金额：￥<em style="color:red">{{ real_total }}</em></p1>
+                    <br>
+                    <p1 id="">运费：￥<em style="color:red">{{ carriage_price }}</em></p1>
+                    <br>
+                    <p1 id="" class="">共计<em style="color:red">{{ all_numbers }}</em>件商品</p1>
+                </p>
+                {% csrf_token %}
+                <input type="submit" id="submit_order" class="btn btn-success" style="float: right;height: 4em" value="提交订单">
+            </td>
+        </tr>
+    </table>
+{% endblock %}
+
+{% block myjs %}
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script>
+    // 提交订单
+$(document).ready(function () {
+    $('#submit_order').click(function() {
+        //获取收货地址
+        var addrid = $('input[name="options0"]:checked').val()
+        //付款方式
+        var pay_method = $('input[name="options"]:checked').val()
+        //商品信息
+        var gid_list_str = '{{ goods_list_str }}'
+
+        var csrf = $("input[name='csrfmiddlewaretoken']").val()
+
+        var real_total = '{{ real_total }}'
+        var carriage_price = '{{ carriage_price }}'
+        var all_numbers = '{{ all_numbers }}'
+
+        $.post(/submit_order/, {
+            addrid:addrid,pay_method:pay_method,
+            gid_list_str:gid_list_str,csrfmiddlewaretoken:csrf,
+            real_total:real_total,carriage_price:carriage_price,
+            all_numbers:all_numbers},
+            function (data) {
+            if (data.status ==='401') {
+                alert(data.msg)
+            }else if (data.status ==='200'){
+                localStorage.setItem('oreder_finish', 2 );
+                window.location.href="{% url 'shop:detail' %}"
+            }
+            
+        })
+    })
+})
+    </script>
+{% endblock %}

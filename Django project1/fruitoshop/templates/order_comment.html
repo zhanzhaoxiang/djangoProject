@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block title %}
+    订单评价
+{% endblock %}
+
+{% block content %}
+    {% if msg %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>{{ msg }}</strong>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+    {% endif %}
+    <div class="row">
+        <div class="col-2">
+            <div class="list-group" id="list-tab" role="tablist">
+                <a class="nav-link list-group-item list-group-item-action active" id="list-home-list"
+                   href="{% url 'shop:detail' %}" role="tab" aria-controls="home">返回用户中心</a>
+            </div>
+        </div>
+        {% csrf_token %}
+        <div class="col-10">
+            <h5 class="center card-title ">全部商品</h5>
+
+            <div>
+                <p class="small" style="float:left;margin-right:2em">订单号:{{ order.order_id }}</p>
+                <p class="small" style="float:left;margin-right:2em">添加时间:{{ order.add_time }}</p>
+                <p class="small">订单状态:{{ order.status }}</p>
+                <p class="small" style="float:left;margin-right:2em">
+                    收件人:{{ order.address.receive_user }}</p>
+                <p class="small" style="float:left;margin-right:2em">
+                    联系电话:{{ order.address.phone }}</p>
+                <p class="small" style="float:left;margin-right:2em">支付方式:{{ order.paymethod }}</p>
+                <p class="small">收货地址:{{ order.address.receive_address }}</p>
+            </div>
+            <div style="height:3em">
+                <p style="float:left;margin-right:2em">订单商品数量：{{ order.goods_num }}</p>
+                <p style="float:left;color:red">订单总金额：{{ order.goods_total }}（含运费￥10）</p>
+            </div>
+
+            <form method="post" action="{% url 'shop:order_comment' %}">
+                <input type="hidden" name="order_id" value="{{ order.order_id }}">
+                <input type="hidden" name="goods_num" value="{{ order.goods_num }}">
+                {% for ordergoods in order.ordergoods_set.all %}
+                    <table class="table table-hover">
+                        <tr>
+                            <td style="width:25%">{{ ordergoods.goods.name }}</td>
+                            <td style="width:25%">
+                                ￥<em>{{ ordergoods.goods.price }}</em>/{{ ordergoods.goods.unite }}
+                            </td>
+                            <td style="width:25%">{{ ordergoods.number }}</td>
+                            <td style="width:25%">￥<em>{{ ordergoods.price }}</em></td>
+                        </tr>
+                        <tr style="float:left">
+                            <td>
+                                <input type="hidden" name="goods_{{ forloop.counter }}"
+                                       value="{{ ordergoods.goods_id }}">
+                                <p class="form-group">
+                                    <label>评价内容：</label>
+                                    <textarea class="textarea" name="content_{{ forloop.counter }}"
+                                              placeholder="评价内容..."></textarea>
+                                </p>
+                            </td>
+                        </tr>
+                    </table>
+                {% endfor %}
+                {% csrf_token %}
+                <input type="submit" id="" class="btn btn-warning"
+                       style=" padding:0;float: right;height: 2em"
+                       order_id="{{ order.order_id }}" order_status="{{ order.order_status }}"
+                       pay_method="{{ order.pay_method }}" value="发布评价">
+
+            </form>
+        </div>
+    </div>
+{% endblock %}

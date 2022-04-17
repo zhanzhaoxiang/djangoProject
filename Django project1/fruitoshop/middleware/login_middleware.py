@@ -2,7 +2,8 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.utils.deprecation import MiddlewareMixin
 
-loginRequired_list = ['/detail/', '/receive_address/', '/order/', '/logout/', '/cart_add/', '/show_my_cart/']
+loginRequired_list = ['/detail/', '/receive_address/', '/order/', '/logout/', '/cart_add/', '/show_my_cart/',
+                      '/order_comment/']
 
 
 # 以下可自定义中间件函数

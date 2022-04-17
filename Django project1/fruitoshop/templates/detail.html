@@ -27,7 +27,7 @@
                    data-toggle="list" href="#list-messages" role="tab" aria-controls="messages">收货地址</a>
             </div>
         </div>
-        <div class="col-6">
+        <div class="col-10">
             <div class=" tab-content" id="nav-tabContent">
                 <div class=" tab-pane fade show active" id="list-home" role="tabpanel" aria-labelledby="list-home-list">
                     <h5 class="center card-title ">基本信息</h5>
@@ -53,6 +53,77 @@
                 </div>
                 <div class="tab-pane fade" id="list-profile" role="tabpanel" aria-labelledby="list-profile-list">
                     <h5 class="center card-title ">全部订单</h5>
+                    <table class="table table-hover">
+                        <tr>
+                            <td style="width:25%">商品名称</td>
+                            <td style="width:25%">价格</td>
+                            <td style="width:25%">数量</td>
+                            <td style="width:25%">小计</td>
+                        </tr>
+                    </table>
+                    {% csrf_token %}
+                    <div id="tbody">
+                        {#                        <tr>#}
+                        {#                            {% for order in page_obj.object_list %}#}
+                        {#                                <div>#}
+                        {#                                    <p class="small" style="float:left;margin-right:2em">订单号:{{ order.order_id }}</p>#}
+                        {#                                    <p class="small" style="float:left;margin-right:2em">添加时间:{{ order.add_time }}</p>#}
+                        {#                                    <p class="small">订单状态:{{ order.status }}</p>#}
+                        {#                                </div>#}
+                        {#                                <div>#}
+                        {#                                    <p class="small" style="float:left;margin-right:2em">#}
+                        {#                                        收件人:{{ order.address.receive_user }}</p>#}
+                        {#                                    <p class="small" style="float:left;margin-right:2em">联系电话:{{ order.address.phone }}</p>#}
+                        {#                                    <p class="small" style="float:left;margin-right:2em">支付方式:{{ order.paymethod }}</p>#}
+                        {#                                    <p class="small">收货地址:{{ order.address.receive_address }}</p>#}
+                        {#                                </div>#}
+                        {#                                <div class="">#}
+                        {#                                    <p style="float:left;margin-right:2em">订单商品数量：{{ order.goods_num }}</p>#}
+                        {#                                    <p style="float:left;color:red">订单总金额：{{ order.goods_total }}</p>#}
+                        {#                                    {% csrf_token %}#}
+                        {#                                    <input type="submit" id="pay" class="pay btn btn-success"#}
+                        {#                                           style=" padding:0;float: right;height: 2em"#}
+                        {#                                           order_id="{{ order.order_id }}" order_status="{{ order.order_status }}"#}
+                        {#                                           pay_method="{{ order.pay_method }}" value="去支付">#}
+                        {#                                </div>#}
+                        {#                                <table class="table table-hover" style="border-bottom: 1px solid black">#}
+                        {#                                    {% for ordergoods in order.ordergoods_set.all %}#}
+                        {#                                        <tr>#}
+                        {#                                            <td style="width:25%">{{ ordergoods.goods.name }}</td>#}
+                        {#                                            <td style="width:25%">#}
+                        {#                                                ￥<em>{{ ordergoods.goods.price }}</em>/{{ ordergoods.goods.unite }}</td>#}
+                        {#                                            <td style="width:25%">{{ ordergoods.number }}</td>#}
+                        {#                                            <td style="width:25%">￥<em>{{ ordergoods.price }}</em></td>#}
+                        {#                                        </tr>#}
+                        {#                                    {% endfor %}#}
+                        {#                                </table>#}
+                        {#                            {% endfor %}#}
+                        {#                        </tr>#}
+                    </div>
+                    <nav aria-label="Page navigation example">
+                        <form id="page" action={% url 'shop:detail' %}>
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item">
+                                    <a class="previous_page page-link" aria-label="Previous">
+                                        <span aria-hidden="true">&laquo;</span>
+                                    </a>
+                                </li>
+                                {% for page_num in page_obj.paginator.page_range %}
+                                    <li class="page-item"><a class="now_page page-link">{{ page_num }}</a></li>
+                                {% endfor %}
+
+                                <li class="page-item">
+                                    <a id="total_pages"
+                                       class=" page-link disabled">共{{ page_obj.paginator.num_pages }}页</a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="next_page page-link" aria-label="Next">
+                                        <span aria-hidden="true">&raquo;</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </form>
+                    </nav>
                 </div>
                 <div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">
                     <h5 class="center card-title ">收货地址</h5>
@@ -89,7 +160,8 @@
                             <label for="inputPassword3"
                                    class="col-sm-4 row justify-content-end col-form-label">详细地址：</label>
                             <div class="form-inline col-sm-6">
-                                <input type="text" class=" form-control col-sm-12" id="receive_address" name="receive_address"
+                                <input type="text" class=" form-control col-sm-12" id="receive_address"
+                                       name="receive_address"
                                        placeholder="详细地址">
                             </div>
                         </div>
@@ -119,12 +191,123 @@
 
 {% block myjs %}
     <script type="text/javascript">
+
+        $(function () {
+            let now_page = 1;
+            page_click();
+            $('.previous_page').addClass('disabled');
+            $('.now_page').first().addClass('active disabled page_this');
+
+            $('.previous_page').click(function () {
+                now_page -= 1
+                if (now_page < 1) {
+                    now_page = 1
+                    return false
+                } else {
+                    $('.page_this').parent().prev().children().click()
+                }
+            })
+
+            $('.next_page').click(function () {
+                let num_pages = $('#total_pages').text()
+                now_page += 1
+                if (now_page > parseInt(num_pages)) {
+                    now_page -= 1
+                    return false
+                } else {
+                    $('.page_this').parent().next().children().click()
+                }
+            })
+
+            $('.now_page').click(function () {
+                now_page = parseInt($(this).text())
+                $('.now_page').removeClass('active disabled page_this')
+                $(this).addClass('active disabled page_this')
+                page_click();
+            })
+
+            function page_click() {
+                $.getJSON('{% url 'shop:detail' %}', {page: now_page}, function (data) {
+                    $('#tbody div').remove()
+                    $('#total_pages').html('共' + data.num_pages + '页')
+                    if (data.has_previous === true) {
+                        $('.previous_page').removeClass('disabled')
+                    } else {
+                        $('.previous_page').addClass('disabled')
+                    }
+                    if (data.has_next === true) {
+                        $('.next_page').removeClass('disabled')
+                    } else {
+                        $('.next_page').addClass('disabled')
+                    }
+                    $('#tbody').append('<div>' + data.new_page + '</div>');
+                    $(function () {
+                        $('.pay').each(function (i) {
+                            var status = $(this).attr('order_status')
+                            if (status === '1') {
+                                $(this).attr('value', '去付款')
+                            } else if (status === '4') {
+                                $(this).attr('value', '去评价')
+
+                            } else if (status === '5') {
+                                $(this).attr('value', '已完成')
+                            }
+                        })
+                    })
+                    $(document).ready(function () {
+                        $('.pay').click(function () {
+                            var order_id = $(this).attr('order_id')
+                            var pay_method = $(this).attr('pay_method')
+                            var order_status = $(this).attr('order_status')
+                            var csrf = $('input[name="csrfmiddlewaretoken"]').val();
+
+                            if (order_status === '1') {
+                                //待支付状态，去支付
+                                $.post('{% url 'shop:order_pay' %}', {
+                                    order_id: order_id,
+                                    pay_method: pay_method,
+                                    csrfmiddlewaretoken: csrf
+                                }, function (data) {
+                                    if (data.status === '200') {
+                                        window.open(data.pay_path)
+
+                                        $.post('/check_order/', {
+                                            order_id: order_id,
+                                            pay_method: pay_method,
+                                            csrfmiddlewaretoken: csrf
+                                        }, function (data) {
+                                            if (data.status === '200') {
+                                                alert(data.msg)
+                                                location.reload()
+                                            } else if (data.status === '401') {
+                                                alert(data.msg)
+                                            }
+                                        })
+                                    } else if (data.status === '401') {
+                                        alert(data.msg)
+                                    }
+                                })
+
+                            }
+                            else if (order_status === '4') {
+                                //待评价，去评价
+                                var orderid = parseInt(order_id)
+                                location.href = "{% url 'shop:order_comment'  %}?orderid="+orderid
+                            }
+                            else {
+                                alert('请勿重复支付！')
+                            }
+                        })
+                    })
+                })
+            }
+        })
         $(document).ready(function () {
                 $("#iconfile").change(function () {
                         var formData = new FormData();
                         formData.append('uid', {{ user.id }});
                         formData.append('icon', $("#iconfile")[0].files[0]);
-                        csrf = $('input[name="csrfmiddlewaretoken"]').val();
+                        var csrf = $('input[name="csrfmiddlewaretoken"]').val();
                         formData.append('csrfmiddlewaretoken', csrf);
                         $.ajax({
                             url: /upload_icon/,

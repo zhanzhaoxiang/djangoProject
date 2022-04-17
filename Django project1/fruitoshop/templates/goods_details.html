@@ -49,10 +49,10 @@
                     </svg>
                 </p>
                 <p class="card-text">数量：
-                    <a href="javascript:;" style="font-size:3ch" class="minus" id="minus" onclick="calculateTotal('-')">-</a>
+                    <a href="javascript:;" style="font-size:3ch"  onclick="calculateTotal('-')">-</a><!--class="minus" id="minus"-->
                     <input id="goods_num" type="text" style="width:5ch; text-align:center" value="1">
-                    <a href="javascript:;" style="font-size:3ch" class="add" id="add"
-                       onclick="calculateTotal('+')">+</a>
+                    <a href="javascript:;" style="font-size:3ch"
+                       onclick="calculateTotal('+')">+</a><!--class="add" id="add"-->
                 </p>
                 <p class="card-text">总价格：￥<em>{{ goods.price }}</em></p>
                 <button type="button" id="buy_now" class="btn btn-outline-success" tag="{{ goods.id }}">立即购买</button>

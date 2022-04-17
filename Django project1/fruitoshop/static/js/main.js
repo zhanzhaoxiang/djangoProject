@@ -187,10 +187,9 @@ $(document).ready(function () {
 
 //购物车商品选中
 $(document).ready(function () {
-    var all_total = 0
-    var gnum = 0
     $('.selected').click(function () {
-
+        var all_total = parseFloat(document.getElementById('all_total_child').innerText);
+        var gnum = parseFloat(document.getElementById('gnum_child').innerText)
         var ischecked = $(this).prop('checked')
         var all_gum = document.getElementsByClassName('selected').length
         //找某个标签的父标签和子标签
@@ -198,12 +197,14 @@ $(document).ready(function () {
         if (ischecked) {
             gnum += 1
             all_total += parseFloat(single_total)
+            $(this).attr('name', 'selected_1')
         } else {
             $('#all_selected').prop('checked', false)
             gnum -= 1
             all_total -= parseFloat(single_total)
+            $(this).attr('name', 'selected_0')
         }
-        if (gnum == all_gum) {
+        if (gnum === all_gum) {
             $('#all_selected').prop('checked', true)
         }
         $('#all_total').children().text(all_total.toFixed(2))
@@ -212,18 +213,20 @@ $(document).ready(function () {
 
 //购物车全选
     $('#all_selected').click(function () {
-        all_total = 0
-        gnum = 0
+        var all_total = 0
+        var gnum = 0
         var ischecked = $(this).prop('checked')
         if (ischecked) {
             $('.selected').each(function () {
                 $(this).prop('checked', true)
+                $(this).attr('name', 'selected_1')
                 all_total += parseFloat($(this).parent().parent().children('.single_total').children().text())
                 gnum += 1
             })
         } else {
             $('.selected').each(function () {
                 $(this).prop('checked', false)
+                $(this).attr('name', 'selected_0')
                 all_total = 0
                 gnum = 0
             })
@@ -244,7 +247,7 @@ $(document).ready(function () {
         if (num === 1) {
             alert('只能整件！');
             return;
-        }else {
+        } else {
             num -= 1;
             //设置数量
             $(this).next().val(num);
@@ -257,12 +260,12 @@ $(document).ready(function () {
 
             var ischecked = $(this).parent().parent().children('.father_selected').children('.selected').prop('checked');
             var all_total = parseFloat($('#all_total').children().text());
-            var temporary_total = all_total - primary_num*price;
-            if(ischecked){
-                all_total=temporary_total+ total;
+            var temporary_total = all_total - primary_num * price;
+            if (ischecked) {
+                all_total = temporary_total + total;
             }
             $('#all_total').children().text(all_total.toFixed(2));
-            $.getJSON('/cart_goods_adjust/',{'gid':gid,'num':num,'total':total})
+            $.getJSON('/cart_goods_adjust/', {'gid': gid, 'num': num, 'total': total})
 
         }
 
@@ -283,12 +286,12 @@ $(document).ready(function () {
         var gid = $(this).prev('.goods_num').attr('tag');
         var ischecked = $(this).parent().parent().children('.father_selected').children('.selected').prop('checked')
         var all_total = parseFloat($('#all_total').children().text())
-        var temporary_total = all_total - primary_num*price
-        if(ischecked){
-            all_total=temporary_total+ total
+        var temporary_total = all_total - primary_num * price
+        if (ischecked) {
+            all_total = temporary_total + total
         }
         $('#all_total').children().text(all_total.toFixed(2))
-        $.getJSON('/cart_goods_adjust/',{'gid':gid,'num':num,'total':total})
+        $.getJSON('/cart_goods_adjust/', {'gid': gid, 'num': num, 'total': total})
     })
 
 })
