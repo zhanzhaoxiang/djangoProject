@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户登录</title>
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+</head>
+<body>
+<form action="{% url 'myapp:login1' %}" method="post">
+    {% csrf_token %}
+    {{ user_login_form.as_p }}
+    <p><label for="">验证码：</label><input type="text" name="code"><img id="generated_code" src="{% url 'myapp:draw' %}" alt=""></p>
+    <p><span id="result">{{ msg }}</span></p>
+    <br>
+    <input type="submit" value="登录">
+</form>
+</body>
+    <script>
+        $('#generated_code').click(function() {
+            path = "{% url 'myapp:draw' %}?ran="+Math.random()
+            $(this).attr('src',path)
+        })
+    </script>
+</html>

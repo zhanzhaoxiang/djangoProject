@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户注册</title>
+</head>
+<body>
+<h1>用户注册</h1>
+<form action="{% url 'myapp:register' %}" method="post">
+    {% csrf_token %}
+    {{ user_register_form.as_ul }}
+    <input type="submit" value="注册">
+{#    <p>#}
+{#        {{ user_register_form.error }}#}
+{#    </p>#}
+</form>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户登录</title>
+    <script src="http://code.jquery.com/jquery-2.1.1.min.js"></script>
+
+</head>
+<body>
+<form action="{% url 'myapp:login' %}" method="post">
+    {% csrf_token %}
+    {{ user_login_form.as_p }}
+    <p><label for="">验证码：</label><input type="text" name="code"><img id="generated_code" src="{% url 'myapp:draw' %}" alt=""></p>
+    <p><span id="result"></span></p>
+    <br>
+    <input type="submit" value="登录">
+</form>
+</body>
+    <script>
+        $('.captcha').click(function () {
+            $.getJSON('/captcha/refresh/', function (result) {
+                $('.captcha').attr('src', result['image_url']);
+                $('#id_captcha_0').val(result['key']);
+            });
+        });
+
+        $('#id_captcha_1').blur(function () {
+            $input = $(this)
+            var key = $('#id_captcha_0').val();
+            var code = $input.val();
+            $('#result').text('')
+            $.getJSON('{% url 'myapp:valid' %}',{key:key,code:code}, function (data) {
+                $('#result').text(data.msg)
+            })
+        })
+
+        $('#generated_code').click(function() {
+            path = "{% url 'myapp:draw' %}?ran="+Math.random()
+            $(this).attr('src',path)
+        })
+    </script>
+</html>
